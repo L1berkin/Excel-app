@@ -1,0 +1,109 @@
+СТРУКТУРА КОДА:
+
+// Основная информация
+
+  // Наследование классов
+  DomListener => ExcelComponent => components(Formula, Header, Table, Toolbar)
+
+  Класс Excel рендерит страницу
+
+  У всех классов компонентов есть статическое поле 'excel__name', где name является наванием компонентами
+
+  '***' - Показывают вложенность папок, для лучшей читаемости
+
+// ------------------------------------------------------------------------------------------------------ //
+
+*src:
+
+  **assets - ПАПКА с шаблонами страницы
+
+
+  **components - ПАПКА с компонентами эксель таблицы
+
+    ***excel - ПАПКА
+
+      Excel.js - Экспортирует класс для динамического рендеринга основного содержимого веб-приложения
+        !!! Экспортирует класс Excel(selector, options = [])
+          передаются в options все классы эдементов в виде массива components и рендерятся в конец selector
+          обязательно реализация у классов компонентов метода toHtml() и реализация метода html() в классе Dom
+
+          методы:
+            getRoot() - Создает с помощью $.create 'div.excel' коревой элемент $root
+              создает html шаблон
+              добавляет созданный шаблон в конец $root
+              возвращает $root
+
+            render() - Рендерит созданный элемент getRoot()
+              вызывает у каждого элемента массива components метод init()
+
+
+    ***formula - ПАПКА
+      Formula.js -
+        !!! Экспортирует класс Formula($root) super {$root, options}}
+        методы:
+            toHTML() возвращает html шаблон элемента
+            onInput()
+            onClick()
+
+
+    ***header - ПАПКА
+      Header.js -
+        !!! Экспортирует класс Header
+          методы:
+            toHTML() возвращает html шаблон элемента
+
+
+    ***table - ПАПКА
+      Table.js -
+        !!! Экспортирует класс Table
+        методы:
+            toHTML() вызывает функцию createTable(), определенную в table.template.js
+
+      table.template.js -
+        !!! Экспортирует функцию createTable(rowsCount = 15)
+
+
+    ***toolbar - ПАПКА
+      Toolbar.js -
+        !!! Экспортирует класс Toolbar($root) super {$root, options}
+        методы:
+            toHTML() возвращает html шаблон элемента
+            onClick()
+
+
+  **core - ПАПКА с корневыми элементами
+
+    dom.js - Класс с основными функицями
+      Класс Dom(selector),
+      методы:
+        html(html) - Задает в selector html
+        clear() - Чистит в selector html
+        on(eventType, callback) - Добавляет на selector событие
+        off(eventType, callback) - Удаляет на selector событие
+        append(node) - Добавляет node в конец selector
+      
+      !!! Экспортирует функцию $(selector), реализующую класс
+        $.create(tagName, classes='') - Создает эелемент с заданными классами и делает его инстансом класса Dom
+
+
+    DomListener.js - Класс для работы с событиями
+      !!! Экспортирует Класс DomListener($root, listeners = [])
+        методы:
+          initDOMListeners() - Добавляет события на эелемент
+          removeDOMListeners() - Удаляет события с элемента
+
+
+    ExcelComponents.js - 
+      !!! Экспортирует класс ExcelComponent($root, options = [])
+        методы:
+          toHTML() Возвращает
+          init() вызывает initDOMListeners()
+          destroy() вызывает removeDOMListeners()
+
+
+    util.js - Утилиты
+      !!! Экспортирует функцию capitalize(string)
+        capitalize(string) - Делает первую букву строки заглавной    
+
+
+  **scss - ПАПКА со стилями

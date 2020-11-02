@@ -9,6 +9,7 @@ export class Toolbar extends ExcelComponent {
       listeners: ['click']
     })
   }
+
   toHTML() {
     return `
       <div class="button">

@@ -58,9 +58,18 @@
         !!! Экспортирует класс Table
         методы:
             toHTML() вызывает функцию createTable(), определенную в table.template.js
+            onMousedown(event) создает всю динамику, работающие по mousedown
 
       table.template.js -
         !!! Экспортирует функцию createTable(rowsCount = 15)
+
+      table.resize.js -
+        !!! Экспортирует функцию resizeHandler($root, event)
+          содержит события по изменению размеров таблицы
+
+      table.functions.js -
+        !!! Экспортирует функцию shouldResize(event)
+          содержит вспомогательные функции для упрощения работы с таблицей
 
 
     ***toolbar - ПАПКА
@@ -73,7 +82,7 @@
 
   **core - ПАПКА с корневыми элементами
 
-    dom.js - Класс с основными функицями
+    dom.js - Класс с основными функциями
       Класс Dom(selector),
       методы:
         html(html) - Задает в selector html
@@ -81,7 +90,12 @@
         on(eventType, callback) - Добавляет на selector событие
         off(eventType, callback) - Удаляет на selector событие
         append(node) - Добавляет node в конец selector
-      
+        data() - getter возвращает dataset инстанса
+        closest(selector) - возвращает ближайшего родителя с заданным selector
+        getCoords() - возвращает все координаты элемента
+        findAll(selector) - возвращает массив со веми элементами DOM, соответствующими selector
+        css(styles = {}) - задает элементу css стили 
+       
       !!! Экспортирует функцию $(selector), реализующую класс
         $.create(tagName, classes='') - Создает эелемент с заданными классами и делает его инстансом класса Dom
 

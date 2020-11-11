@@ -10,4 +10,4 @@ const excel = new Excel('#app', {
 })
 
 excel.render()
-// 34
+// 50

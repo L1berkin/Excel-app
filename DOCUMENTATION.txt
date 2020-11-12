@@ -36,14 +36,17 @@
             render() - Рендерит созданный элемент getRoot()
               вызывает у каждого элемента массива components метод init()
 
+            destroy() - Удаляет все компоненты и события, слушатели, связанные с ними
+
 
     ***formula - ПАПКА
       Formula.js -
         !!! Экспортирует класс Formula($root) super {$root, options}}
         методы:
-            toHTML() возвращает html шаблон элемента
-            onInput()
-            onClick()
+            toHTML() - возвращает html шаблон элемента
+            init() - super.init() и добавляет все события на нее через $on
+            onInput(event) - Реализует событие ввода
+            onKeydown(event) - Реализует события нажатия клавиш
 
 
     ***header - ПАПКА
@@ -57,8 +60,12 @@
       Table.js -
         !!! Экспортирует класс Table
         методы:
-            toHTML() вызывает функцию createTable(), определенную в table.template.js
-            onMousedown(event) создает всю динамику, работающие по mousedown
+            toHTML() - вызывает функцию createTable(), определенную в table.template.js
+            prepare() - инициализирует класс TableSelection до инициализации самого компонентами
+            init() - super.init() и выделяет первую ячейку и добавляет собыития через $on
+            selectCell($cell) - Выделяет ячейку и добавляет необходимые события
+            onMousedown(event) - создает всю динамику, работающие по mousedown
+            inInput(event) - Событие ввода
 
       table.template.js -
         !!! Экспортирует функцию createTable(rowsCount = 15)
@@ -71,13 +78,20 @@
         !!! Экспортирует функцию shouldResize(event)
           содержит вспомогательные функции для упрощения работы с таблицей
 
+      TableSelection.js - Вспомогательный класс для работы с выделением ячеек
+        !!! Экспортирует класс TableSelection
+        static className = 'selected
+          методы:
+            select($el) - Выделяет элемент
+            clear() - Удаялет TableSelection.className
+            selectGroup($group = []) - выделяет группу ячеек
+
 
     ***toolbar - ПАПКА
       Toolbar.js -
-        !!! Экспортирует класс Toolbar($root) super {$root, options}
+        !!! Экспортирует класс Toolbar($root, options) super {$root, options}
         методы:
             toHTML() возвращает html шаблон элемента
-            onClick()
 
 
   **core - ПАПКА с корневыми элементами
@@ -86,38 +100,53 @@
       Класс Dom(selector),
       методы:
         html(html) - Задает в selector html
+        text(text) - Получает/изменяет текстовый контент инстанса
         clear() - Чистит в selector html
         on(eventType, callback) - Добавляет на selector событие
         off(eventType, callback) - Удаляет на selector событие
+        find(selector) - Находит selector в DOM
         append(node) - Добавляет node в конец selector
         data() - getter возвращает dataset инстанса
         closest(selector) - возвращает ближайшего родителя с заданным selector
         getCoords() - возвращает все координаты элемента
         findAll(selector) - возвращает массив со веми элементами DOM, соответствующими selector
         css(styles = {}) - задает элементу css стили 
+        id(parse) - Преобразует data-id="12:31" => [12, 31]
+        focus() - вызывает this.$el.focus
+        addClass(className) - Добавляет класс
+        removeClass(className) - Удаялет класс
        
       !!! Экспортирует функцию $(selector), реализующую класс
         $.create(tagName, classes='') - Создает эелемент с заданными классами и делает его инстансом класса Dom
 
 
     DomListener.js - Класс для работы с событиями
-      !!! Экспортирует Класс DomListener($root, listeners = [])
+      !!! Экспортирует класс DomListener($root, listeners = [])
         методы:
           initDOMListeners() - Добавляет события на эелемент
           removeDOMListeners() - Удаляет события с элемента
 
+    Emitter.js - Вспомогательный класс связывающий компоненты между собой. (Observered Pattern)
+      !!! Экспортирует класс Emitter(listeners = {})
+        методы:
+          emit(event, ...args) - Уведомляет всех слушателей, если они есть
+          subcribe(event, fn) - Подписывает на уведомления и добавляет нового слушателя
+
 
     ExcelComponents.js - 
-      !!! Экспортирует класс ExcelComponent($root, options = [])
+      !!! Экспортирует класс ExcelComponent($root, options = {})
         методы:
-          toHTML() Возвращает
-          init() вызывает initDOMListeners()
-          destroy() вызывает removeDOMListeners()
+          toHTML() - Возвращает шаблон HTML
+          $emit(event, ...args) - Уведомляет слушатели про событие event
+          $on(event, fn) - Подписывает на событие event
+          init() - Инициализирует компонент
+          destroy() - Удаляет компонент и все слушатели
 
 
     util.js - Утилиты
-      !!! Экспортирует функцию capitalize(string)
-        capitalize(string) - Делает первую букву строки заглавной    
+      !!! Экспортирует все функции
+        capitalize(string) - Делает первую букву строки заглавной 
+        range(start, end) - Возвращает массив со всеми id выделенных ячеек   
 
 
   **scss - ПАПКА со стилями

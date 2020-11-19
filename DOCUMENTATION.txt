@@ -1,4 +1,4 @@
-СТРУКТУРА КОДА:
+СТРУКТУРА ПРИЛОЖЕНИЯ:
 
 // Основная информация
 
@@ -53,7 +53,9 @@
       Header.js -
         !!! Экспортирует класс Header
           методы:
+            prepare() - вызывается до инициализации
             toHTML() возвращает html шаблон элемента
+            onInput(event) - изменение названия
 
 
     ***table - ПАПКА
@@ -65,13 +67,16 @@
             init() - super.init() и выделяет первую ячейку и добавляет собыития через $on
             selectCell($cell) - Выделяет ячейку и добавляет необходимые события
             onMousedown(event) - создает всю динамику, работающие по mousedown
-            inInput(event) - Событие ввода
+            onKeydown(event) - добавляет события на клавиши
+            upadateTextInStore(value) - обновляет store
+            inInput(event) - передает в store инфу об изменениях
 
       table.template.js -
         !!! Экспортирует функцию createTable(rowsCount = 15)
+          содержит функции по работе с таблицей
 
       table.resize.js -
-        !!! Экспортирует функцию resizeHandler($root, event)
+        !!! Экспортирует промис resizeHandler($root, event)
           содержит события по изменению размеров таблицы
 
       table.functions.js -
@@ -84,17 +89,31 @@
           методы:
             select($el) - Выделяет элемент
             clear() - Удаялет TableSelection.className
+            get selectedIds() - возвращает id выделенных ячеек
             selectGroup($group = []) - выделяет группу ячеек
+            applyStyle(style) - добавляет style выделенным ячейкам
 
 
     ***toolbar - ПАПКА
       Toolbar.js -
         !!! Экспортирует класс Toolbar($root, options) super {$root, options}
-        методы:
-            toHTML() возвращает html шаблон элемента
+          методы:
+            prepare() - вызывается до инициализации
+            get template() - возвращает шаблон toolbar
+            toHTML() возвращает this.template
+            storeChanged(changes) - изменяет состояние, в зависимости от changes
+            onClick(event) - событие клика на кнопку
+
+      toolbar.template.js - 
+        !!! Экспортирует функцию createToolbar(s)
+          createToolbar(s) - создает шаблон toolbar, добавляя информацию для работы со state
 
 
   **core - ПАПКА с корневыми элементами
+
+    createStore.js - создает store
+      !!! Экспортирует функцию createStore(rootReducer, initialState = {})
+        возвращает subcribe(fn), dispatch(action), getState() - функции reducer
 
     dom.js - Класс с основными функциями
       Класс Dom(selector),
@@ -110,9 +129,11 @@
         closest(selector) - возвращает ближайшего родителя с заданным selector
         getCoords() - возвращает все координаты элемента
         findAll(selector) - возвращает массив со веми элементами DOM, соответствующими selector
-        css(styles = {}) - задает элементу css стили 
+        css(styles = {}) - задает элементу css стили
+        getStyles(styles = []) - преобразует стили из styles
         id(parse) - Преобразует data-id="12:31" => [12, 31]
         focus() - вызывает this.$el.focus
+        attr(name, value) - если value, изменяет атрибут name в $el на value, если не value, возвращает атрибут name
         addClass(className) - Добавляет класс
         removeClass(className) - Удаялет класс
        
@@ -139,14 +160,55 @@
           toHTML() - Возвращает шаблон HTML
           $emit(event, ...args) - Уведомляет слушатели про событие event
           $on(event, fn) - Подписывает на событие event
+          $dispatch(action) - добавление изменений в store
+          storehanged()
+          isWatching(key) - проверяет массив subcribe на наличие key
           init() - Инициализирует компонент
           destroy() - Удаляет компонент и все слушатели
+
+
+    ExcelStateComponent.js - 
+      !!! Экспортирует класс ExcelStateComponent
+        методы:
+          get template() - получает state
+          initState() - инициализирует state
+          setState() - обновляет state и добавляет html шаблон в $root
+
+
+    parse.js - конструкция, обеспечивающая функционал функций в formula в excel
+      !!! Экспортирует функцию parse(value = '')
+
+
+    StoreSubscriber.js - определенный класс, упрощающий добавление изменений в state (подобие subcribe из redux)
+      !!! Экспортирует класс StoreSubscriber(store)
+        методы:
+          subscribeComponents(components) - подписка компонентов
+          unsubscribeFromStore() - отписка компонентов
 
 
     util.js - Утилиты
       !!! Экспортирует все функции
         capitalize(string) - Делает первую букву строки заглавной 
-        range(start, end) - Возвращает массив со всеми id выделенных ячеек   
+        range(start, end) - Возвращает массив со всеми id выделенных ячеек
+        storage(key, data = null) - если !data, то возвращает элемент из localStorage по key, если data, то изменяет localStorage по key на data
+        isEqual(a, b) - сравнивает a и b
+        camelToDashCase(str) - переводит camelCase в dashCase
+        toInlineStyles(styles = {}) - трансформирует объект стилей в строку валидную для html атрибута style
+        debounce(fn, wait) - debounce из redux
+
+
+  **redux - ПАПКА redux
+    actions.js - хранит action creaters для redux
+      !!! Экспортирует actions creaters
+
+    initialState - Объект начального состояния приложения
+      !!! Экспортирует этот объект
+
+    rootReducer.js - reducer
+      !!! Экспортирует reducer
+
+    types.js - хранит типы action
+      !!! Экспортирует их
 
 
   **scss - ПАПКА со стилями

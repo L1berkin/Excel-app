@@ -13,7 +13,7 @@
   display: flex;
 
   .button {
-    @include button(green);
+    @include button($primary-color);
   }
 
   // // test

@@ -1,5 +1,5 @@
 # Excel
-*Excel* - Приложение, работающее по принципу Google таблиц Excel.
+**Excel** - Приложение, работающее по принципу Google таблиц Excel.
 
 ## Getting Started
 ```

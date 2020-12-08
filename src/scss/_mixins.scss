@@ -8,6 +8,7 @@
     display: inline-block;
     color: rgba(0, 0, 0, .7);
     cursor: pointer;
+    user-select: none;
 
     & > span {
       font-size: 18px;

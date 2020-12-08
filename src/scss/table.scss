@@ -26,7 +26,7 @@
     border: 1px solid $border-color;
     background: #f8f9fa;
     border-top: none;
-
+    user-select: none;
   }
 
   .row-data {
@@ -44,6 +44,7 @@
     border: 1px solid $border-color;
     border-left: none;
     border-top: none;
+    user-select: none;
   }
 
   .cell {
